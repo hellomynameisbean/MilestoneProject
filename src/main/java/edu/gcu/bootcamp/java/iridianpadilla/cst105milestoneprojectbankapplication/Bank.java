@@ -2,23 +2,33 @@ package edu.gcu.bootcamp.java.iridianpadilla.cst105milestoneprojectbankapplicati
 
 import java.util.Scanner;
 
-public class Bank {
 /**
- * main method will run all other methods called
- * @param args
+ * The Bank class will have the main() to run method/funstions
+ * @author bean
+ *
  */
+public class Bank {
+	
+	/**
+	 * main method will run all other methods called
+	 * @param args
+	 */
 	// main() method 
 	public static void main(String[]args) {
 		// create objects of classes and set parameters
 	Bank bank = new Bank("GCU Credit Union");
-	Savings savings = new Savings(5000.00, "191923");
-	Checking checking = new Checking(5000.00, "991773");
+	Savings savings = new Savings(5000.00, "12345678");
+	Checking checking = new Checking(2500.00, "45676543");
+	Loan loan = new Loan(10000.00, "9876543");
+	Customer customer = new Customer("James","Bond");
 	// set method values 
 	checking.setOverDraft(45.00);
 	savings.setServiceFee(25.00);
-	savings.setAnnualInterestRate(.06);
-	savings.setMinBalance(200.00);
-	bank.displayMenu(checking, savings);
+	savings.setAnnualInterestRate(.03);
+	loan.setLateFee(25.00);
+	loan.setInterestRate(.09);
+	savings.setMinBalance(500.00);
+	bank.displayMenu(checking, savings, loan);
 //	bank.actionMenu(option, checking, savings);
 //	bank.doEndMonth(checking, savings);
 //	bank.displayExitScreen();
@@ -31,6 +41,7 @@ public class Bank {
 	Scanner scanner = new Scanner(System.in);
 	// create attributes for methods
 	private String name;
+	
 	/**
 	 * method will set attribute 
 	 * @param name will return value name
@@ -39,14 +50,15 @@ public class Bank {
 	public Bank(String name) {
 		this.name = (name);
 	}
+	
 	// create method display menu
 	// create switch statement to display all options available to user from bank account
-	private void displayMenu(Checking checking, Savings savings) {
+	private void displayMenu(Checking checking, Savings savings, Loan loan) {
 		int option;
 		do {
 			System.out.println("===================================");
 			System.out.println("             MAIN MENU");
-			System.out.println("            "+ this.name.toUpperCase());
+			System.out.println("           "+ this.name.toUpperCase());
 			System.out.println("===================================");
 			System.out.println("Pick an option: ");
 			System.out.println("---------------------");
@@ -55,17 +67,19 @@ public class Bank {
 			System.out.println(" 3: : Write a Check");
 			System.out.println(" 4: : Withdraw from Savings");
 			System.out.println(" 5: : Get balance");
-			System.out.println(" 6: : Close month");
+			System.out.println(" 6: : Make a Payment to Loan Balance");
+			System.out.println(" 7: : Close month");
 			System.out.println("---------------------");
 			System.out.println(" 9: : Exit");
 			option = scanner.nextInt();
-			this.actionMenu(option, checking, savings);
+			this.actionMenu(option, checking, savings, loan);
 		}while (option !=9);
 	}
+	
 	// create method action menu 
 	// create a if else if statements to display actions that are available to be taken 
 	// from bank account account
-	private void actionMenu(int option, Checking checking, Savings savings) {
+	void actionMenu(int option, Checking checking, Savings savings, Loan loan) {
 		if (option == 1){
 			this.displayDepositChecking(checking);
 		}else if
@@ -82,7 +96,10 @@ public class Bank {
 			this.displayBalanceScreen(checking, savings);
 		}else if
 			(option == 6) {
-			this.doEndMonth(checking, savings);
+			this.makePayment(loan);
+		}else if
+			(option == 7) {
+			this.doEndMonth(checking, savings, loan);
 		}else if
 			(option == 9) {
 			this.displayExitScreen();
@@ -91,18 +108,24 @@ public class Bank {
 	}
 	// create method do end month
 	// create a switch case statement to display do end month from checking or savings account
-	private void doEndMonth(Checking checking, Savings savings) {
+	private void doEndMonth(Checking checking, Savings savings, Loan loan) {
 		// display new balance with fee
-		System.out.println("Here is your end of month balance: "+checking.getBalance());
+		System.out.printf("Here is your end of month balance: $%.2f\n",checking.getBalance());
 		//checking.setOverDraft(overDraft));
 		if(savings.getBalance()>savings.getMinBalance()) {
 			savings.setBalance(savings.getBalance()+(savings.getBalance()*savings.getAnnualInterestRate()/12));
 		}else {
 			savings.setBalance(savings.getBalance()+savings.getServiceFee());
 			}
-		System.out.println("Here is your end of month balance for your savings account: "
-			+savings.getBalance());;
-		
+		System.out.printf("Here is your end of month balance for your savings account: $%.2f\n"
+			,savings.getBalance());;
+		if(loan.getPaymentMade()>0) {
+			loan.setBalance(loan.getBalance()+(loan.getBalance()*loan.getInterestRate()/12));
+		}else {
+			loan.setBalance(loan.getBalance()+(loan.getBalance()*loan.getInterestRate()/12)+loan.getLateFee());
+		}
+		System.out.printf("Here is your end of month balance for your loan account: $%.2f\n"
+					,loan.getBalance());
 		
 	}
 	// create method display exit screen 
@@ -159,5 +182,11 @@ public class Bank {
 		checking.setBalance(checking.getBalance()+value);
 		System.out.println("Here is your new balance: "+ checking.getBalance());
 	}
-	
+	public void makePayment(Loan loan) {
+		double value;
+		System.out.println("How much would you like to pay for your loan?");
+		value = scanner.nextDouble();
+		loan.setBalance(loan.getBalance()-value);
+		System.out.println("Thank you for your payment here is your new balance: "+loan.getBalance());
+		}
 }

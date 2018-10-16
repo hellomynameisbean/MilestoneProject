@@ -3,6 +3,7 @@ package edu.gcu.bootcamp.java.iridianpadilla.cst105milestoneprojectbankapplicati
 import org.junit.Test;
 
 public class Account {
+	Transaction transaction = new Transaction();
 	// create attributes for a method
 	private double balance;
 	private String account;
@@ -42,8 +43,9 @@ public class Account {
 	 */
 	// create method to withdraw from checking or savings account
 	public double doWithdraw(double amountWithdrawn) {
-		
 		this.balance = amountWithdrawn;
+		String [] detailTrans = {java.time.LocalDate.now().toString(), this.account, Double.toString(amountWithdrawn), Double.toString(balance), this.getClass().getSimpleName()};
+        transaction.transaction.add(detailTrans);
 		return balance;
 	}
 	/**
@@ -54,6 +56,8 @@ public class Account {
 	// create method to deposit into checking and savings account
 	public double doDeposit(double amountDeposited) {
 		this.balance = amountDeposited;
+		String [] detailTrans = {java.time.LocalDate.now().toString(), this.account, Double.toString(amountDeposited), Double.toString(balance), this.getClass().getSimpleName()};
+        transaction.transaction.add(detailTrans);
 		return balance;
 	}
 }
